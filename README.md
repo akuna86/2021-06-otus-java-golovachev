@@ -7,3 +7,4 @@
 
 Список работ:  
 - hw01-gradle - ДЗ01  
+- hw02-collections - ДЗ02
