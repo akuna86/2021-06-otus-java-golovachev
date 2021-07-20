@@ -22,9 +22,13 @@ allprojects {
     repositories {
         mavenCentral()
     }
+
     apply plugin: "io.spring.dependency-management"
     dependencyManagement {
         dependencies {
+            imports {
+                mavenBom("org.springframework.boot:spring-boot-dependencies:2.5.2")
+            }
             dependency(group: 'com.google.guava', name: 'guava', version: '30.1.1-jre')
         }
     }
