@@ -68,7 +68,13 @@ public class Customer implements Comparable<Customer>, Cloneable {
         return Long.compare(this.getScores(), o.getScores());
     }
 
+    @Override
     public Customer clone() {
-        return new Customer(this.getId(), this.getName(), this.getScores());
+        try {
+            return (Customer) super.clone();
+        } catch (CloneNotSupportedException e) {
+            return new Customer(this.getId(), this.getName(), this.getScores());
+        }
     }
+
 }
