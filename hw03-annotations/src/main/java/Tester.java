@@ -48,6 +48,7 @@ public class Tester {
     @After
     void secondAfter() {
         System.out.println("After 2");
+        throw new RuntimeException("FAIL");
     }
 
     @Test

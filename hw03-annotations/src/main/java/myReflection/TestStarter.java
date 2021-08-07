@@ -59,21 +59,34 @@ public class TestStarter {
                                        Method testMethod,
                                        List<Method> beforeList,
                                        List<Method> afterList) {
+        // create NEW instance
+        T newClazz = null;
         try {
-            T newClazz = clazz.getDeclaredConstructor().newInstance();
+            newClazz = clazz.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
+            System.out.printf("%s failed instance creation: %s%n", clazz.getName(), ex.getCause());
+            return false;
+        }
+
+        try {
             // before. No order
             for (Method beforeMethod : beforeList) {
                 singleMethod(beforeMethod, newClazz);
             }
             // test. No order
             singleMethod(testMethod, newClazz);
-            //after. No order
-            for (Method afterMethod : afterList) {
-                singleMethod(afterMethod, newClazz);
-            }
         } catch (Exception ex) {
             System.out.printf("%s failed: %s%n", testMethod.getName(), ex.getCause());
             return false;
+        } finally {
+            //after. No order
+            for (Method afterMethod : afterList) {
+                try {
+                    singleMethod(afterMethod, newClazz);
+                } catch (Exception ex) {
+                    System.out.printf("%s failed: %s%n", testMethod.getName(), ex.getCause());
+                }
+            }
         }
         return true;
 
