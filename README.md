@@ -9,3 +9,4 @@
 - hw01-gradle - ДЗ01  
 - hw02-collections - ДЗ02
 - hw03-annotations - ДЗ03
+- hw04-gc - ДЗ04
