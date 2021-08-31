@@ -10,3 +10,4 @@
 - hw02-collections - ДЗ02
 - hw03-annotations - ДЗ03
 - hw04-gc - ДЗ04
+- hw05-aop - ДЗ05
