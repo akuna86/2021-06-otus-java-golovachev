@@ -3,11 +3,16 @@ package atm;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MyATM {
-    private final Map<Integer, BanknoteCell> cellsMap;
+/**
+ * Банкомат
+ */
+public class MyATM implements ATM {
+    private final CellStorage cellStorage;
+    private final Comparator<Map.Entry<Integer, BanknoteCell>> cellComparator;
 
-    public MyATM() {
-        this.cellsMap = new HashMap<>();
+    public MyATM(CellStorage cellStorage) {
+        this.cellStorage = cellStorage;
+        this.cellComparator = Map.Entry.comparingByKey();
     }
 
     /**
@@ -15,14 +20,13 @@ public class MyATM {
      *
      * @param banknoteList список банкнот
      */
+    @Override
     public void takeBanknotes(List<Banknote> banknoteList) {
         Map<Integer, List<Banknote>> banknotesMap = banknoteList.stream().collect(Collectors.groupingBy(Banknote::getDenomination));
         for (Integer key : banknotesMap.keySet()) {
-            try {
-                this.cellsMap.get(key).addBanknotes(banknotesMap.get(key));
-            } catch (Exception ex) {
-                throw new RuntimeException("Фальшивка");
-            }
+            if (cellStorage.getCell(key) != null)
+                cellStorage.addBanknotes(key, banknotesMap.get(key));
+            else throw new RuntimeException("Фальшивка");
         }
     }
 
@@ -32,33 +36,32 @@ public class MyATM {
      * @param targetSum Нужная сумма
      * @return Список банкнот
      */
+    @Override
     public List<Banknote> getBanknotes(int targetSum) {
-        var resultMap = new HashMap<Integer, List<Banknote>>();
+        var resultList = new ArrayList<Banknote>(); //список банкнот на выдачу
+        var checkerMap = new HashMap<Integer, Integer>(); // количество банкнот каждого номинала
         //#костылиВелосипеды :)
         int sum = 0;
-        var cell_100 = cellsMap.get(100);
-        var cell_50 = cellsMap.get(50);
-        while (sum < targetSum) {
-            if (targetSum - sum >= 100 && cell_100.getRest() > 0) { //ищем по 100
-                var banknote = cell_100.getBanknoteList().get(0);
-                var bl = resultMap.computeIfAbsent(100, f -> new ArrayList<>());
-                bl.add(banknote);
-                cell_100.removeBanknote(banknote);
-                sum += banknote.getDenomination();
-            } else if (targetSum - sum >= 50 && cell_50.getRest() > 0) { //ищем по 50
-                var banknote = cell_50.getBanknoteList().get(0);
-                var bl = resultMap.computeIfAbsent(50, f -> new ArrayList<>());
-                bl.add(banknote);
-                cell_50.removeBanknote(banknote);
-                sum += banknote.getDenomination();
-            } else { // вернем банкноты. По идее их и брать-то не надо было...
-                cell_100.addBanknotes(resultMap.get(100));
-                cell_50.addBanknotes(resultMap.get(50));
-                throw new RuntimeException("Денег нет, но вы держитесь");
+        //отсортированные ячейки по номиналу от большего
+        List<Map.Entry<Integer, BanknoteCell>> orderedEntry = new ArrayList<>(cellStorage.getAllCells().entrySet());
+        orderedEntry.sort(cellComparator.reversed());
+        //пройдемся по ячейкам и убедимся что там есть нужная сумма
+        for (var cellEntry : orderedEntry) {
+            var key = cellEntry.getKey();
+            var bestCnt = (targetSum - sum) / key;
+            var availableCnt = cellEntry.getValue().getBanknoteList().size();
+            if (availableCnt != 0 && bestCnt != 0) {
+                sum += Integer.min(availableCnt, bestCnt) * key;
+                checkerMap.put(key, Integer.min(availableCnt, bestCnt));
             }
+            if (sum == targetSum) break;
         }
+        if (sum < targetSum) throw new RuntimeException("Денег нет, но вы держитесь");
+        //заберем банкноты из ячеек
+        for (var removeEntry : checkerMap.entrySet())
+            resultList.addAll(cellStorage.removeBanknotes(removeEntry.getKey(), removeEntry.getValue()));
 
-        return resultMap.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+        return resultList;
     }
 
     /**
@@ -66,8 +69,9 @@ public class MyATM {
      *
      * @return сумма всех ячеек банкомата
      */
-    public Integer getRest() {
-        return cellsMap.values().stream().mapToInt(BanknoteCell::getRest).sum();
+    @Override
+    public int getRest() {
+        return cellStorage.getRest();
     }
 
     /**
@@ -75,8 +79,9 @@ public class MyATM {
      *
      * @return Unmodifiable Map
      */
-    public Map<Integer, BanknoteCell> getCells() {
-        return Map.copyOf(cellsMap);
+    @Override
+    public Map<Integer, BanknoteCell> getAllCells() {
+        return cellStorage.getAllCells();
     }
 
     /**
@@ -84,7 +89,8 @@ public class MyATM {
      *
      * @param cell Map.Entry<Integer, BanknoteCell>
      */
+    @Override
     public void addCell(Map.Entry<Integer, BanknoteCell> cell) {
-        this.cellsMap.put(cell.getKey(), cell.getValue());
+        this.cellStorage.addCell(cell);
     }
 }

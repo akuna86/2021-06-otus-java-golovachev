@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class MyATMTest {
     private final static int DEFAULT_VOLUME = 10;
-    MyATM myATM = new MyATM();
+    MyATM myATM = new MyATM(new CellStorageImpl());
 
     @BeforeEach
     public void prepareATM() {
@@ -51,7 +51,7 @@ public class MyATMTest {
         List<Banknote> banknotesList = List.of(new BanknoteImpl(50), new BanknoteImpl(100), new BanknoteImpl(50));
         myATM.takeBanknotes(banknotesList);
 
-        var bc = myATM.getCells();
+        var bc = myATM.getAllCells();
 
         Assertions.assertEquals(12, bc.get(50).getBanknoteList().size());
         Assertions.assertEquals(11, bc.get(100).getBanknoteList().size());
@@ -73,7 +73,7 @@ public class MyATMTest {
         Assertions.assertEquals(2, myMoney.size());
         Assertions.assertEquals(1350, myATM.getRest());
 
-        var bc = myATM.getCells();
+        var bc = myATM.getAllCells();
 
         Assertions.assertEquals(9, bc.get(50).getBanknoteList().size());
         Assertions.assertEquals(9, bc.get(100).getBanknoteList().size());
@@ -86,7 +86,7 @@ public class MyATMTest {
         Assertions.assertEquals(11, myMoney.size());
         Assertions.assertEquals(450, myATM.getRest());
 
-        var bc = myATM.getCells();
+        var bc = myATM.getAllCells();
 
         Assertions.assertEquals(9, bc.get(50).getBanknoteList().size());
         Assertions.assertEquals(0, bc.get(100).getBanknoteList().size());

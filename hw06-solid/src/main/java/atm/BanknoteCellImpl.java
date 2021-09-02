@@ -3,6 +3,9 @@ package atm;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Ячейка для банкнот
+ */
 public class BanknoteCellImpl implements BanknoteCell {
     private final List<Banknote> banknoteList;
 
@@ -15,7 +18,8 @@ public class BanknoteCellImpl implements BanknoteCell {
      *
      * @return сумма
      */
-    public Integer getRest() {
+    @Override
+    public int getRest() {
         return banknoteList.stream().mapToInt(Banknote::getDenomination).sum();
     }
 
@@ -24,17 +28,21 @@ public class BanknoteCellImpl implements BanknoteCell {
      *
      * @param banknotes список
      */
+    @Override
     public void addBanknotes(List<Banknote> banknotes) {
         this.banknoteList.addAll(banknotes);
     }
 
     /**
-     * Забрать банкноту
+     * Забрать банкноты
      *
-     * @param banknote банкнота
+     * @param cnt количество
      */
-    public void removeBanknote(Banknote banknote) {
-        this.banknoteList.remove(banknote);
+    @Override
+    public List<Banknote> removeBanknotes(int cnt) {
+        List<Banknote> removed = this.banknoteList.subList(banknoteList.size() - cnt, banknoteList.size()).stream().toList();
+        this.banknoteList.subList(banknoteList.size() - cnt, banknoteList.size()).clear();
+        return removed;
     }
 
     /**
@@ -42,6 +50,7 @@ public class BanknoteCellImpl implements BanknoteCell {
      *
      * @return список
      */
+    @Override
     public List<Banknote> getBanknoteList() {
         return banknoteList.stream().toList(); //The returned List is unmodifiable
     }

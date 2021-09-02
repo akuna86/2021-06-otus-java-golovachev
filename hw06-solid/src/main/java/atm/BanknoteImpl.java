@@ -1,5 +1,8 @@
 package atm;
 
+/**
+ * Банкнота
+ */
 public class BanknoteImpl implements Banknote {
     private final int denomination;
 
@@ -12,6 +15,7 @@ public class BanknoteImpl implements Banknote {
      *
      * @return номинал
      */
+    @Override
     public int getDenomination() {
         return this.denomination;
     }

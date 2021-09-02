@@ -3,11 +3,11 @@ package atm;
 import java.util.List;
 
 public interface BanknoteCell {
-    Integer getRest();
+    int getRest();
 
     void addBanknotes(List<Banknote> banknotes);
 
-    void removeBanknote(Banknote banknote);
+    List<Banknote> removeBanknotes(int cnt);
 
     List<Banknote> getBanknoteList();
 }
