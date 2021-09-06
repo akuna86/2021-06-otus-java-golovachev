@@ -11,3 +11,4 @@
 - hw03-annotations - ДЗ03
 - hw04-gc - ДЗ04
 - hw05-aop - ДЗ05
+- hw06-solid - ДЗ06
