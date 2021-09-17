@@ -9,6 +9,7 @@ import ru.otus.model.Message;
 import ru.otus.processor.ProcessorEvenSecondThrow;
 import ru.otus.processor.ProcessorSwapFields11And12;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,7 @@ class ComplexProcessorTest {
         var processor1 = new ProcessorSwapFields11And12();
         var processor1Spy = Mockito.spy(processor1);
 
-        var processor2 = new ProcessorEvenSecondThrow();
+        var processor2 = new ProcessorEvenSecondThrow(LocalDateTime::now);
         var processor2Spy = Mockito.spy(processor2);
 
         var processors = List.of(processor1Spy, processor2Spy);
@@ -57,9 +58,9 @@ class ComplexProcessorTest {
         var processor1 = new ProcessorSwapFields11And12();
         var processor1Spy = Mockito.spy(processor1);
 
-        var processor2 = new ProcessorEvenSecondThrow();
+        var processor2 = new ProcessorEvenSecondThrow(LocalDateTime::now);
         var processor2Spy = Mockito.spy(processor2);
-        doReturn(true).when(processor2Spy).isSecondEven(any());
+        doReturn(true).when(processor2Spy).isSecondEven();
 
         var processors = List.of(processor2Spy, processor1Spy);//!! first with exception
 

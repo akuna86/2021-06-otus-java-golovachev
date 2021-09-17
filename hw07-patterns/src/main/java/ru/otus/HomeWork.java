@@ -8,6 +8,7 @@ import ru.otus.processor.LoggerProcessor;
 import ru.otus.processor.ProcessorEvenSecondThrow;
 import ru.otus.processor.ProcessorSwapFields11And12;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class HomeWork {
@@ -27,7 +28,7 @@ public class HomeWork {
            из элеменов "to do" создать new ComplexProcessor и обработать сообщение
          */
         var processors = List.of(new ProcessorSwapFields11And12(),
-                new LoggerProcessor(new ProcessorEvenSecondThrow()));
+                new LoggerProcessor(new ProcessorEvenSecondThrow(LocalDateTime::now)));
 
         var complexProcessor = new ComplexProcessor(processors, ex -> {});
         var listenerPrinter = new ListenerPrinterConsole();

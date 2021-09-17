@@ -2,19 +2,24 @@ package ru.otus.processor;
 
 import ru.otus.model.Message;
 
-import java.time.LocalDateTime;
+public class ProcessorEvenSecondThrow implements Processor {
 
-public class ProcessorEvenSecondThrow implements Processor{
+    private DateTimeProvider dateTimeProvider;
 
-    public boolean isSecondEven(LocalDateTime time){
-        return time.getSecond() % 2 == 0;
+    public ProcessorEvenSecondThrow(DateTimeProvider dateTimeProvider) {
+        this.dateTimeProvider = dateTimeProvider;
+    }
+
+    public boolean isSecondEven() {
+        return dateTimeProvider.getTime().getSecond() % 2 == 0;
     }
 
     @Override
-    public Message process(Message message){
-        if ( isSecondEven(LocalDateTime.now()) ){
+    public Message process(Message message) {
+        if (isSecondEven()) {
             throw new RuntimeException("Time is even");
-        };
+        }
         return message;
     }
+
 }

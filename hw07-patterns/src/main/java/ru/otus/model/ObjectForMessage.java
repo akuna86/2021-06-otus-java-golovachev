@@ -16,19 +16,15 @@ public class ObjectForMessage implements Cloneable {
 
     @Override
     public ObjectForMessage clone() {
-        try {
-            ObjectForMessage clone = (ObjectForMessage) super.clone();
-            if(data != null) {
+        ObjectForMessage clone = new ObjectForMessage();
+        if (this.data != null) {
             clone.setData(this.data.stream().collect(Collectors.toList()));
-            }
-            return clone;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
         }
+        return clone;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return data.toString();
     }
 }
