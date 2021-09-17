@@ -18,24 +18,13 @@ public class HistoryListener implements Listener, HistoryReader {
     @Override
     public void onUpdated(Message msg) {
         Message msgCopy = msg.clone();
-        try {
-            hist.put(msgCopy.getId(), msgCopy);
-        } catch (Exception ex) {
-            throw new UnsupportedOperationException(ex.getCause());
-        }
+        hist.put(msgCopy.getId(), msgCopy);
     }
 
     @Override
     public Optional<Message> findMessageById(long id) {
-        Message msgCopy = null;
-        try {
-            var msg = hist.get(id).clone();
-            if (msg != null) {
-                msgCopy = msg.clone();
-            }
-        } catch (Exception ex) {
-            throw new UnsupportedOperationException(ex.getCause());
-        }
-        return Optional.ofNullable(msgCopy);
+        var msg = hist.get(id);
+
+        return Optional.ofNullable(msg).map(Message::clone);
     }
 }
