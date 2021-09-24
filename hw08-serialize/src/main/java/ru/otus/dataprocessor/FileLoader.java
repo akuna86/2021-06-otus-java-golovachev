@@ -12,7 +12,7 @@ import java.util.List;
 
 public class FileLoader implements Loader {
 
-    String fileName;
+    private final String fileName;
 
     public FileLoader(String fileName) {
         this.fileName = fileName;
