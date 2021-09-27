@@ -12,3 +12,6 @@
 - hw04-gc - ДЗ04
 - hw05-aop - ДЗ05
 - hw06-solid - ДЗ06
+- hw07-patterns - ДЗ07
+- hw08-serialize - ДЗ08
+- hw09-jdbc:homework - ДЗ09
